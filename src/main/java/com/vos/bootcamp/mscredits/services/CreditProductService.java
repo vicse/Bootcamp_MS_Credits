@@ -16,4 +16,6 @@ public interface CreditProductService {
 
   public Mono<CreditProduct> deleteById(String id);
 
+  public Mono<Boolean> existsCustomer(String id);
+
 }
