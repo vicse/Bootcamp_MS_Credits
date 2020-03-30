@@ -1,9 +1,11 @@
 package com.vos.bootcamp.mscredits.controllers;
 
-import com.vos.bootcamp.mscredits.models.CreditProductType;
-import com.vos.bootcamp.mscredits.services.CreditProductTypeService;
+import com.vos.bootcamp.mscredits.models.CreditProduct;
+import com.vos.bootcamp.mscredits.services.CreditProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,35 +19,34 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import javax.validation.Valid;
-import java.net.URI;
-
 @RestController
-@RequestMapping("/api/creditProductsTypes")
+@RequestMapping("/api/creditProducts")
 @Api(value = "Bank Credits Products Microservice")
-public class CreditProductTypeController {
+public class CreditProductController {
 
-  private final CreditProductTypeService service;
+  private final CreditProductService service;
 
-  public CreditProductTypeController(CreditProductTypeService service) {
+  public CreditProductController(CreditProductService service) {
     this.service = service;
   }
 
   /* =========================================
-    Function to List all Credit Products Types
-  =========================================== */
+   Function to List all Credit Products Types
+ =========================================== */
+
   @GetMapping
-  @ApiOperation(value = "List all CreditProductsTypes", notes = "List all CreditProductsTypes of Collections")
-  public Flux<CreditProductType> getCreditProductsTypes() {
+  @ApiOperation(value = "List all CreditProducts", notes = "List all CreditProducts of Collections")
+  public Flux<CreditProduct> getCreditProducts() {
     return service.findAll();
   }
 
   /* ===============================================
        Function to obtain a creditProductType by id
   ============================================ */
+
   @GetMapping("/{id}")
-  @ApiOperation(value = "Get a Credit Product Type", notes = "Get a creditProduct Type by id")
-  public Mono<ResponseEntity<CreditProductType>> getByIdCreditProductType(@PathVariable String id) {
+  @ApiOperation(value = "Get a Credit Product", notes = "Get a creditProduct by id")
+  public Mono<ResponseEntity<CreditProduct>> getByIdCreditProduct(@PathVariable String id) {
     return service.findById(id)
             .map(ResponseEntity::ok)
             .defaultIfEmpty(ResponseEntity
@@ -55,34 +56,38 @@ public class CreditProductTypeController {
   }
 
   /* ===============================================
-           Function to create a creditProductType
- =============================================== */
+          Function to create a creditProductType
+  =============================================== */
+
   @PostMapping
-  @ApiOperation(value = "Create CreditProductType", notes = "Create CreditProductType, check the model please")
-  public Mono<ResponseEntity<CreditProductType>> createCreditProductType(
-          @Valid @RequestBody CreditProductType creditProductType) {
-    return service.save(creditProductType)
-            .map(creditProductTypeDB -> ResponseEntity
-                    .created(URI.create("/api/creditProductsTypes/".concat(creditProductTypeDB.getId())))
+  @ApiOperation(value = "Create Credit Product",
+          notes = "Create CreditProduct, check the model please")
+
+  public Mono<ResponseEntity<CreditProduct>> createCreditProduct(
+          @Valid @RequestBody CreditProduct creditProduct) {
+    return service.save(creditProduct)
+            .map(creditProductDB -> ResponseEntity
+                    .created(URI.create("/api/creditProducts/".concat(creditProductDB.getId())))
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(creditProductTypeDB)
+                    .body(creditProductDB)
             );
   }
+
 
   /* ====================================================
             Function to update a creditProductType by id
     ===================================================== */
   @PutMapping("/{id}")
-  @ApiOperation(value = "Update a CreditProductType", notes = "Update a credit product Type by ID")
-  public Mono<ResponseEntity<CreditProductType>> updateCreditProductType(
+  @ApiOperation(value = "Update a Credit Product", notes = "Update a credit product by ID")
+  public Mono<ResponseEntity<CreditProduct>> updateCreditProduct(
           @PathVariable String id,
-          @RequestBody CreditProductType creditProductType) {
+          @RequestBody CreditProduct creditProduct) {
 
-    return service.update(id, creditProductType)
-            .map(creditProductTypeDB -> ResponseEntity
-                    .created(URI.create("/api/creditProductsTypes/".concat(creditProductTypeDB.getId())))
+    return service.update(id, creditProduct)
+            .map(creditProductDB -> ResponseEntity
+                    .created(URI.create("/api/creditProducts/".concat(creditProductDB.getId())))
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(creditProductTypeDB))
+                    .body(creditProductDB))
             .defaultIfEmpty(ResponseEntity
                     .notFound()
                     .build()
@@ -94,8 +99,8 @@ public class CreditProductTypeController {
     ===================================================== */
 
   @DeleteMapping("/{id}")
-  @ApiOperation(value = "Delete a CreditProductType", notes = "Delete a credit product Type by ID")
-  public Mono<ResponseEntity<Void>> deleteByIdCreditProductType(@PathVariable String id) {
+  @ApiOperation(value = "Delete a Credit Product", notes = "Delete a credit product by ID")
+  public Mono<ResponseEntity<Void>> deleteByIdCreditProduct(@PathVariable String id) {
     return service.deleteById(id)
             .map(res -> ResponseEntity.ok().<Void>build())
             .defaultIfEmpty(ResponseEntity
@@ -104,7 +109,6 @@ public class CreditProductTypeController {
             );
 
   }
-
 
 
 }

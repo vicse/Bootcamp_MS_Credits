@@ -36,12 +36,9 @@ public class CreditProduct {
   @DBRef
   private CreditProductType creditProductType;
 
-  @NotEmpty
   private Date createdAt;
 
-  @NotEmpty
   private Date updatedAt;
-
 
 
 }
