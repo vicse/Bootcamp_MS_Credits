@@ -77,6 +77,34 @@ public class CreditProductControllerTest {
   }
 
   @Test
+  void getCreditProductByAccountNumber_whenCreditProductExists_returnCorrectCreditProduct() {
+    CreditProduct expectedCreditProduct = expectedCreditProducts.get(0);
+    when(creditProductService.findByAccountNumber(expectedCreditProduct.getAccountNumber()))
+            .thenReturn(Mono.just(expectedCreditProduct));
+
+    client.get()
+            .uri("/accountNumber/{accountNumber}", expectedCreditProduct.getAccountNumber())
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectBody(CreditProduct.class)
+            .isEqualTo(expectedCreditProduct);
+  }
+
+  @Test
+  void getCreditProductByAccountNumber_whenCreditProductNotExist_returnNotFound() {
+    String accountNumber = "NOT_EXIST_ID";
+    when(creditProductService.findByAccountNumber(accountNumber))
+            .thenReturn(Mono.empty());
+
+    client.get()
+            .uri("/accountNumber/{accountNumber}", accountNumber)
+            .exchange()
+            .expectStatus()
+            .isNotFound();
+  }
+
+  @Test
   void getCreditProductById_whenCreditProductNotExist_returnNotFound() {
     String id = "NOT_EXIST_ID";
     when(creditProductService.findById(id))

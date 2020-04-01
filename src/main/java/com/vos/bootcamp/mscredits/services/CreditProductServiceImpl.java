@@ -32,6 +32,11 @@ public class CreditProductServiceImpl implements CreditProductService {
   }
 
   @Override
+  public Mono<CreditProduct> findByAccountNumber(String accountNumber) {
+    return repository.findByAccountNumber(accountNumber);
+  }
+
+  @Override
   public Flux<CreditProduct> findAll() {
     return repository.findAll();
   }

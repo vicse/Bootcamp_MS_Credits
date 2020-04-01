@@ -57,6 +57,25 @@ public class CreditProductServiceTest {
   }
 
   @Test
+  void getByAccountNumber_whenAccountNumberExists_returnCorrectCreditProduct() {
+    when(creditProductRepository.findByAccountNumber(creditProduct1.getAccountNumber())).thenReturn(Mono.just(creditProduct1));
+
+    Mono<CreditProduct> actual = creditProductService.findByAccountNumber(creditProduct1.getAccountNumber());
+
+    assertResults(actual, creditProduct1);
+  }
+
+  @Test
+  void getByAccountNumber_whenAccountNumberNotExist_returnEmptyMono() {
+    when(creditProductRepository.findByAccountNumber(creditProduct1.getAccountNumber())).thenReturn(Mono.empty());
+
+    Mono<CreditProduct> actual = creditProductService.findByAccountNumber(creditProduct1.getAccountNumber());
+
+    assertResults(actual);
+  }
+
+
+  @Test
   void getById_whenIdExists_returnCorrectCreditProduct() {
     when(creditProductRepository.findById(creditProduct1.getId())).thenReturn(Mono.just(creditProduct1));
 

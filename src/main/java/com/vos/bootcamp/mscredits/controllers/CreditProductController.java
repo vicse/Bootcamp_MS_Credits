@@ -31,7 +31,7 @@ public class CreditProductController {
   }
 
   /* =========================================
-   Function to List all Credit Products Types
+   Function to List all Credit Products
  =========================================== */
 
   @GetMapping
@@ -41,7 +41,7 @@ public class CreditProductController {
   }
 
   /* ===============================================
-       Function to obtain a creditProductType by id
+       Function to obtain a creditProduct by id
   ============================================ */
 
   @GetMapping("/{id}")
@@ -55,8 +55,23 @@ public class CreditProductController {
             );
   }
 
+   /* ===============================================
+       Function to obtain a creditProduct by id
+  ============================================ */
+
+  @GetMapping("/accountNumber/{accountNumber}")
+  @ApiOperation(value = "Get a Credit Product By Account Number", notes = "Get a creditProduct by account number")
+  public Mono<ResponseEntity<CreditProduct>> getByAccountNumber(@PathVariable String accountNumber) {
+    return service.findByAccountNumber(accountNumber)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity
+                    .notFound()
+                    .build()
+            );
+  }
+
   /* ===============================================
-          Function to create a creditProductType
+          Function to create a creditProduct
   =============================================== */
 
   @PostMapping
@@ -75,7 +90,7 @@ public class CreditProductController {
 
 
   /* ====================================================
-            Function to update a creditProductType by id
+            Function to update a creditProduct by id
     ===================================================== */
   @PutMapping("/{id}")
   @ApiOperation(value = "Update a Credit Product", notes = "Update a credit product by ID")
@@ -95,7 +110,7 @@ public class CreditProductController {
   }
 
   /* ====================================================
-            Function to delete a creditProductType by id
+            Function to delete a creditProduct by id
     ===================================================== */
 
   @DeleteMapping("/{id}")

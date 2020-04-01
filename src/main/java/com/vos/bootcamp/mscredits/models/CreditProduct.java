@@ -32,6 +32,8 @@ public class CreditProduct {
 
   private Double creditAmount;
 
+  private Double creditAmountAvailable;
+
   @Valid
   @DBRef
   private CreditProductType creditProductType;
