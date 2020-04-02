@@ -71,7 +71,22 @@ public class CreditProductController {
   }
 
   /* ===============================================
-          Function to create a creditProduct
+     Function to know if the Credit Product exists
+  ================================================= */
+  @GetMapping("/{accountNumber}/exist")
+  @ApiOperation(value = "Credit Product exists", notes = "Validate if credit Product exists")
+  public Mono<ResponseEntity<Boolean>> exitsCreditProduct(@PathVariable String accountNumber) {
+    return service.existsByAccountNumber(accountNumber)
+            .map(ResponseEntity::ok)
+            .defaultIfEmpty(ResponseEntity
+                    .notFound()
+                    .build()
+            );
+  }
+
+
+  /* ===============================================
+          Function to create a credit Product
   =============================================== */
 
   @PostMapping

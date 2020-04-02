@@ -118,6 +118,20 @@ public class CreditProductControllerTest {
   }
 
   @Test
+  void validateIfCreditProductExists() {
+    final String accountNumber = "1234-123123-123";
+    when(creditProductService.existsByAccountNumber(accountNumber)).thenReturn(Mono.just(true));
+
+    client.get()
+            .uri("/{accountNumber}/exist", accountNumber)
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectBody(Boolean.class)
+            .isEqualTo(true);
+  }
+
+  @Test
   void addCreditProduct() {
     CreditProduct expectedCreditProduct = expectedCreditProducts.get(0);
     when(creditProductService.save(expectedCreditProduct))

@@ -18,6 +18,8 @@ public interface CreditProductService {
 
   public Mono<Boolean> existsCustomer(String id);
 
+  public Mono<Boolean> existsByAccountNumber(String accountNumber);
+
   public Mono<CreditProduct> findByAccountNumber(String accountNumber);
 
 }

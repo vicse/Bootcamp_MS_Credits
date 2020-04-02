@@ -94,6 +94,16 @@ public class CreditProductServiceTest {
   }
 
   @Test
+  void validateIfCreditProductExists() {
+    final String accountNumber = "1234-123123-123";
+    when(creditProductRepository.existsByAccountNumber(accountNumber)).thenReturn(Mono.just(true));
+
+    Mono<Boolean> actual = creditProductService.existsByAccountNumber(accountNumber);
+
+    assertResults(actual, true);
+  }
+
+  @Test
   void create() {
     when(creditProductRepository.save(creditProduct1)).thenReturn(Mono.just(creditProduct1));
 
@@ -147,6 +157,13 @@ public class CreditProductServiceTest {
     Mono<CreditProduct> actual = creditProductService.deleteById(creditProduct1.getId());
 
     assertResults(actual);
+  }
+
+  private void assertResults(Mono<Boolean> actual, boolean b) {
+    StepVerifier
+            .create(actual)
+            .expectNext(b)
+            .verifyComplete();
   }
 
   private void assertResults(Publisher<CreditProduct> publisher, CreditProduct... expectedCreditProduct) {

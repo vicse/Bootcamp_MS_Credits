@@ -32,6 +32,11 @@ public class CreditProductServiceImpl implements CreditProductService {
   }
 
   @Override
+  public Mono<Boolean> existsByAccountNumber(String accountNumber) {
+    return repository.existsByAccountNumber(accountNumber);
+  }
+
+  @Override
   public Mono<CreditProduct> findByAccountNumber(String accountNumber) {
     return repository.findByAccountNumber(accountNumber);
   }
@@ -50,6 +55,7 @@ public class CreditProductServiceImpl implements CreditProductService {
   public Mono<CreditProduct> save(CreditProduct creditProduct) {
 
     creditProduct.setCreatedAt(new Date());
+    creditProduct.setCreditAmountAvailable(creditProduct.getCreditAmount());
     Mono<Boolean> existsCus = this.existsCustomer(creditProduct.getNumDocOwner());
 
     return existsCus.flatMap(resp -> {
@@ -64,9 +70,10 @@ public class CreditProductServiceImpl implements CreditProductService {
 
   @Override
   public Mono<CreditProduct> update(String id, CreditProduct creditProduct) {
-    creditProduct.setUpdatedAt(new Date());
     return repository.findById(id)
             .flatMap(creditProductDB -> {
+
+              creditProductDB.setUpdatedAt(new Date());
 
               if (creditProduct.getAccountNumber() == null) {
                 creditProductDB.setAccountNumber(creditProductDB.getAccountNumber());
@@ -78,6 +85,12 @@ public class CreditProductServiceImpl implements CreditProductService {
                 creditProductDB.setCreditAmount(creditProductDB.getCreditAmount());
               } else {
                 creditProductDB.setCreditAmount(creditProduct.getCreditAmount());
+              }
+
+              if (creditProduct.getCreditAmountAvailable() == null) {
+                creditProductDB.setCreditAmountAvailable(creditProductDB.getCreditAmountAvailable());
+              } else {
+                creditProductDB.setCreditAmountAvailable(creditProduct.getCreditAmountAvailable());
               }
 
               if (creditProduct.getCreditProductType() == null) {

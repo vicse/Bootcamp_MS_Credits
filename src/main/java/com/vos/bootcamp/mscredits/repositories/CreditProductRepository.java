@@ -7,4 +7,7 @@ import reactor.core.publisher.Mono;
 public interface CreditProductRepository extends ReactiveMongoRepository<CreditProduct, String> {
 
   public Mono<CreditProduct> findByAccountNumber(String accountNumber);
+
+  public Mono<Boolean> existsByAccountNumber(String accountNumber);
+
 }
