@@ -32,6 +32,8 @@ public class CreditProduct {
 
   private Double creditAmount;
 
+  private Double DebtAmount;
+
   private Double creditAmountAvailable;
 
   @Valid

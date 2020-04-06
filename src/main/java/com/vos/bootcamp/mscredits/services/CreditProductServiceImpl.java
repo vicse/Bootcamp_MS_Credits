@@ -56,6 +56,8 @@ public class CreditProductServiceImpl implements CreditProductService {
 
     creditProduct.setCreatedAt(new Date());
     creditProduct.setCreditAmountAvailable(creditProduct.getCreditAmount());
+    creditProduct.setDebtAmount(creditProduct.getCreditAmount());
+
     Mono<Boolean> existsCus = this.existsCustomer(creditProduct.getNumDocOwner());
 
     return existsCus.flatMap(resp -> {
@@ -85,6 +87,12 @@ public class CreditProductServiceImpl implements CreditProductService {
                 creditProductDB.setCreditAmount(creditProductDB.getCreditAmount());
               } else {
                 creditProductDB.setCreditAmount(creditProduct.getCreditAmount());
+              }
+
+              if (creditProduct.getDebtAmount() == null) {
+                creditProductDB.setDebtAmount(creditProductDB.getCreditAmount());
+              } else {
+                creditProductDB.setDebtAmount(creditProduct.getCreditAmount());
               }
 
               if (creditProduct.getCreditAmountAvailable() == null) {
