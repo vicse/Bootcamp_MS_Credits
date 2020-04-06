@@ -16,7 +16,7 @@ import reactor.test.StepVerifier;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class CreditProductTypeTest {
+public class CreditProductTypeServiceTest {
 
   private final CreditProductType creditProductType1 = CreditProductType.builder().name("PERSONAL").build();
   private final CreditProductType creditProductType2 = CreditProductType.builder().name("EMPRESARIAL").build();

@@ -2,9 +2,10 @@ package com.vos.bootcamp.mscredits.services;
 
 import com.vos.bootcamp.mscredits.models.CreditProduct;
 import com.vos.bootcamp.mscredits.repositories.CreditProductRepository;
+import com.vos.bootcamp.mscredits.repositories.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -15,20 +16,11 @@ import java.util.Date;
 public class CreditProductServiceImpl implements CreditProductService {
 
   private final CreditProductRepository repository;
+  private final CustomerRepository customerRepository;
 
-  public CreditProductServiceImpl(CreditProductRepository repository) {
+  public CreditProductServiceImpl(CreditProductRepository repository, CustomerRepository customerRepository) {
     this.repository = repository;
-  }
-
-  @Override
-  public Mono<Boolean> existsCustomer(String id) {
-    return WebClient
-            .create()
-            .get()
-            .uri("http://localhost:8001/api/customers/" + id + "/exist")
-            .retrieve()
-            .bodyToMono(Boolean.class);
-
+    this.customerRepository = customerRepository;
   }
 
   @Override
@@ -58,7 +50,7 @@ public class CreditProductServiceImpl implements CreditProductService {
     creditProduct.setCreditAmountAvailable(creditProduct.getCreditAmount());
     creditProduct.setDebtAmount(creditProduct.getCreditAmount());
 
-    Mono<Boolean> existsCus = this.existsCustomer(creditProduct.getNumDocOwner());
+    Mono<Boolean> existsCus = customerRepository.existsCustomer(creditProduct.getNumDocOwner());
 
     return existsCus.flatMap(resp -> {
       if (resp) {

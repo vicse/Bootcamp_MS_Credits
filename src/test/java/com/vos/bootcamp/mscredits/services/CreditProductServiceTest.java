@@ -5,6 +5,7 @@ import com.vos.bootcamp.mscredits.models.CreditProductType;
 import com.vos.bootcamp.mscredits.models.Customer;
 import com.vos.bootcamp.mscredits.models.CustomerType;
 import com.vos.bootcamp.mscredits.repositories.CreditProductRepository;
+import com.vos.bootcamp.mscredits.repositories.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,11 +40,14 @@ public class CreditProductServiceTest {
   @Mock
   private CreditProductRepository creditProductRepository;
 
+  @Mock
+  private CustomerRepository customerRepository;
+
   private CreditProductService creditProductService;
 
   @BeforeEach
   void SetUp(){
-    creditProductService = new CreditProductServiceImpl(creditProductRepository) {
+      creditProductService = new CreditProductServiceImpl(creditProductRepository, customerRepository) {
     };
   }
 
@@ -105,6 +109,9 @@ public class CreditProductServiceTest {
 
   @Test
   void create() {
+    when(customerRepository.existsCustomer(customer1.getNumIdentityDoc()))
+            .thenReturn(Mono.just(true));
+
     when(creditProductRepository.save(creditProduct1)).thenReturn(Mono.just(creditProduct1));
 
     Mono<CreditProduct> actual = creditProductService.save(creditProduct1);
@@ -114,9 +121,12 @@ public class CreditProductServiceTest {
 
   @Test
   void create_whenCustomerNotExist() {
-    when(creditProductRepository.save(creditProduct3)).thenReturn(Mono.error(new Exception("Customer not exist")));
+    when(customerRepository.existsCustomer(customer1.getNumIdentityDoc()))
+            .thenReturn(Mono.just(false));
 
-    Mono<CreditProduct> actual = creditProductService.save(creditProduct3);
+    when(creditProductRepository.save(creditProduct1)).thenReturn(Mono.just(creditProduct1));
+
+    Mono<CreditProduct> actual = creditProductService.save(creditProduct1);
 
     assertResults(actual, new Exception("Customer not exist"));
   }
